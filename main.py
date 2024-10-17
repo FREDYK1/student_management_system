@@ -1,3 +1,5 @@
+from re import search
+
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QDialog, QVBoxLayout, QLineEdit, \
     QPushButton, QComboBox
@@ -15,6 +17,7 @@ class MainWindow(QMainWindow):
         # Set Menubar
         file_menu_item = self.menuBar().addMenu("File")
         help_menu_item = self.menuBar().addMenu("Help")
+        edit_student_item = self.menuBar().addMenu("Edit")
 
         # Set Menubar Actions
         student_action = QAction("Add Student", self)
@@ -23,6 +26,9 @@ class MainWindow(QMainWindow):
 
         about_action = QAction("About", self)
         help_menu_item.addAction(about_action)
+
+        search_student_action = QAction("Search Student", self)
+        edit_student_item.addAction(search_student_action)
 
         #Create a Table
         self.table = QTableWidget()
