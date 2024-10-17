@@ -1,5 +1,5 @@
 from PyQt6.QtGui import QAction
-from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidget
+from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem
 import sys
 import sqlite3
 
@@ -26,14 +26,24 @@ class MainWindow(QMainWindow):
         self.table = QTableWidget()
         self.table.setColumnCount(4)
         self.table.setHorizontalHeaderLabels(("Id", "Name", "Course", "Mobile"))
+        self.table.verticalHeader().setVisible(False)
         self.setCentralWidget(self.table)
 
+    # Add Student from database
     def load_data(self):
-        pass
+        # Create a connection
+        connection = sqlite3.connect("student_database.db")
+        result = connection.execute("SELECT * FROM students")
+        for row_number, row_data in enumerate(result):
+            self.table.insertRow(row_number)
+            for column_number, data in enumerate(row_data):
+                self.table.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+        connection.close()
 
 
 # Create the application instance and start application
 app = QApplication(sys.argv)
 window = MainWindow()
 window.show()
+window.load_data()
 sys.exit(app.exec())
