@@ -1,5 +1,6 @@
 from re import search
 
+from PyQt6.QtCore import QLine
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QDialog, QVBoxLayout, QLineEdit, \
     QPushButton, QComboBox
@@ -28,6 +29,7 @@ class MainWindow(QMainWindow):
         help_menu_item.addAction(about_action)
 
         search_student_action = QAction("Search Student", self)
+        search_student_action.triggered.connect(self.search)
         edit_student_item.addAction(search_student_action)
 
         #Create a Table
@@ -53,6 +55,10 @@ class MainWindow(QMainWindow):
 
     def insert(self):
         dialog = InsertDialog()
+        dialog.exec()
+
+    def search(self):
+        dialog = SearchDialog()
         dialog.exec()
 
 class InsertDialog(QDialog):
@@ -105,6 +111,29 @@ class InsertDialog(QDialog):
 
         window.load_data()
 
+class SearchDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+
+        # Dialog box Title
+        self.setWindowTitle("Search Student")
+
+        # Dimensions of dialog box
+        self.setFixedWidth(300)
+        self.setFixedHeight(300)
+
+        layout = QVBoxLayout()
+
+        # Add student name line
+        student_name_line = QLineEdit()
+        student_name_line.setPlaceholderText("Name")
+        layout.addWidget(student_name_line)
+
+        # Add search button
+        search_button = QPushButton("Search")
+        layout.addWidget(search_button)
+
+        self.setLayout(layout)
 
 # Create the application instance and start application
 app = QApplication(sys.argv)
