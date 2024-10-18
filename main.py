@@ -12,6 +12,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        #Add favicon
+        self.setWindowIcon(QIcon("icons/Kantech_favicon.png"))
+
         # Set the window title and size
         self.setWindowTitle("Student Management System")
         self.setMinimumSize(800, 600)
@@ -27,6 +30,7 @@ class MainWindow(QMainWindow):
         file_menu_item.addAction(student_action)
 
         about_action = QAction("About", self)
+        about_action.triggered.connect(self.about)
         help_menu_item.addAction(about_action)
 
         search_student_action = QAction(QIcon("icons/search.png"), "Search Student", self)
@@ -98,6 +102,28 @@ class MainWindow(QMainWindow):
     def search(self):
         dialog = SearchDialog()
         dialog.exec()
+
+    def about(self):
+        dialog = AboutDialog()
+        dialog.exec()
+
+
+class AboutDialog(QMessageBox):
+    def __init__(self):
+        super().__init__()
+
+        # Dialog box Title
+        self.setWindowTitle("About")
+
+        content = """
+        he program is a Student Management System built using PyQt6 and SQLite3. It provides a graphical user interface 
+        (GUI) for managing student records, including adding, editing, searching, and deleting student information. 
+        The main window features a menu bar, toolbar, and a table to display student data. Dialogs are used for various 
+        operations like inserting, updating, and searching student records. The program connects to an SQLite database 
+        to store and retrieve student information, ensuring data persistence.
+        """
+
+        self.setText(content)
 
 
 class DeleteDialog(QDialog):
@@ -281,7 +307,7 @@ class SearchDialog(QDialog):
         name = self.student_name.text()
         connection = sqlite3.connect("student_database.db")
         cursor = connection.cursor()
-        result = cursor.execute("SELECT * FROM students WHERE name = ?", (name,))
+        cursor.execute("SELECT * FROM students WHERE name = ?", (name,))
         items =  window.table.findItems(name, Qt.MatchFlag.MatchFixedString)
         for item in items:
             window.table.item(item.row(), 1).setSelected(True)
