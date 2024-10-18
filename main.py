@@ -1,9 +1,10 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QDialog, QVBoxLayout, QLineEdit, \
-    QPushButton, QComboBox, QToolBox, QToolBar
+    QPushButton, QComboBox, QToolBox, QToolBar, QStatusBar
 import sys
 import sqlite3
+
 
 
 class MainWindow(QMainWindow):
@@ -45,6 +46,36 @@ class MainWindow(QMainWindow):
         toolbar.addAction(student_action)
         toolbar.addAction(search_student_action)
 
+        # Create Status Bar and add status bar elements
+        self.status_bar = QStatusBar()
+        self.setStatusBar(self.status_bar)
+
+        self.table.cellClicked.connect(self.cell_clicked)
+
+    def cell_clicked(self):
+        edit_button = QPushButton("Edit")
+        edit_button.clicked.connect(self.edit)
+
+        delete_button = QPushButton("Delete")
+        delete_button.clicked.connect(self.delete)
+
+        children = self.findChildren(QPushButton)
+
+        if children:
+            for child in children:
+                self.status_bar.removeWidget(child)
+
+        self.status_bar.addWidget(edit_button)
+        self.status_bar.addWidget(delete_button)
+
+    def edit(self):
+        dialog = EditDialog()
+        dialog.exec()
+
+    def delete(self):
+        dialog = DeleteDialog()
+        dialog.exec()
+
     # Add Student from database
     def load_data(self):
         # Clear the table
@@ -66,6 +97,13 @@ class MainWindow(QMainWindow):
     def search(self):
         dialog = SearchDialog()
         dialog.exec()
+
+class DeleteDialog(QDialog):
+    pass
+
+class EditDialog(QDialog):
+    pass
+
 
 class InsertDialog(QDialog):
     def __init__(self):
