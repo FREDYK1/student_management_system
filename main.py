@@ -1,9 +1,7 @@
-from re import search
-
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QAction
+from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QDialog, QVBoxLayout, QLineEdit, \
-    QPushButton, QComboBox
+    QPushButton, QComboBox, QToolBox, QToolBar
 import sys
 import sqlite3
 
@@ -12,8 +10,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # Set the window title
+        # Set the window title and size
         self.setWindowTitle("Student Management System")
+        self.setMinimumSize(800, 600)
 
         # Set Menubar
         file_menu_item = self.menuBar().addMenu("File")
@@ -21,14 +20,14 @@ class MainWindow(QMainWindow):
         edit_student_item = self.menuBar().addMenu("Edit")
 
         # Set Menubar Actions
-        student_action = QAction("Add Student", self)
+        student_action = QAction(QIcon("icons/add.png"), "Add Student", self)
         student_action.triggered.connect(self.insert)
         file_menu_item.addAction(student_action)
 
         about_action = QAction("About", self)
         help_menu_item.addAction(about_action)
 
-        search_student_action = QAction("Search Student", self)
+        search_student_action = QAction(QIcon("icons/search.png"), "Search Student", self)
         search_student_action.triggered.connect(self.search)
         edit_student_item.addAction(search_student_action)
 
@@ -38,6 +37,13 @@ class MainWindow(QMainWindow):
         self.table.setHorizontalHeaderLabels(("Id", "Name", "Course", "Mobile"))
         self.table.verticalHeader().setVisible(False)
         self.setCentralWidget(self.table)
+
+        # Create Tool Bar and add toolbar elements
+        toolbar = QToolBar()
+        toolbar.setMovable(True)
+        self.addToolBar(toolbar)
+        toolbar.addAction(student_action)
+        toolbar.addAction(search_student_action)
 
     # Add Student from database
     def load_data(self):
@@ -136,6 +142,8 @@ class SearchDialog(QDialog):
 
         self.setLayout(layout)
     def search(self):
+        window.load_data()
+
         name = self.student_name.text()
         connection = sqlite3.connect("student_database.db")
         cursor = connection.cursor()
