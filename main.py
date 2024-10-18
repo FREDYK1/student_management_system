@@ -1,5 +1,3 @@
-from operator import index
-
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QDialog, QVBoxLayout, QLineEdit, \
@@ -140,14 +138,25 @@ class EditDialog(QDialog):
         layout.addWidget(self.mobile_number)
 
         # Add "Add Student" Button
-        add_student_button = QPushButton("Add Student")
+        add_student_button = QPushButton("Update")
         add_student_button.clicked.connect(self.update_student_data)
         layout.addWidget(add_student_button)
 
         self.setLayout(layout)
 
     def update_student_data(self):
-        pass
+        # Student id
+        student_id = window.table.item(window.table.currentRow(), 0).text()
+
+        # Connect to database
+        connection = sqlite3.connect("student_database.db")
+        cursor = connection.cursor()
+        cursor.execute("UPDATE students SET name = ?, course = ?, mobile = ? WHERE id = ?",
+                       (self.student_name.text(), self.course_name.currentText(), self.mobile_number.text(),
+                        student_id))
+        connection.commit()
+        cursor.close()
+        window.load_data()
 
 
 class InsertDialog(QDialog):
