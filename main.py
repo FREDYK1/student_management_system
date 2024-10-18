@@ -144,6 +144,9 @@ class SearchDialog(QDialog):
         for item in items:
             window.table.item(item.row(), 1).setSelected(True)
 
+        cursor.close()
+        connection.close()
+
 
 
 # Create the application instance and start application
