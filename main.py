@@ -1,3 +1,5 @@
+from operator import index
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QDialog, QVBoxLayout, QLineEdit, \
@@ -102,7 +104,50 @@ class DeleteDialog(QDialog):
     pass
 
 class EditDialog(QDialog):
-    pass
+    def __init__(self):
+        super().__init__()
+
+        # Dialog box Title
+        self.setWindowTitle("Update Student Data")
+
+        # Dimensions of dialog box
+        self.setFixedWidth(300)
+        self.setFixedHeight(300)
+
+        layout = QVBoxLayout()
+
+        # Index of row
+        row_index = window.table.currentRow()
+
+        # Add student Line Edit
+        name = window.table.item(row_index, 1).text()
+        self.student_name = QLineEdit(name)
+        self.student_name.setPlaceholderText("Name")
+        layout.addWidget(self.student_name)
+
+        # Add Course Line Edit
+        course_name = window.table.item(row_index, 2).text()
+        self.course_name = QComboBox()
+        self.course_name.setPlaceholderText("Course")
+        self.course_name.addItems(["Biology", "Math", "Physics", "Astrology", "Chemistry"])
+        self.course_name.setCurrentText(course_name)
+        layout.addWidget(self.course_name)
+
+        # Add Mobile
+        mobile = window.table.item(row_index, 3).text()
+        self.mobile_number = QLineEdit(mobile)
+        self.mobile_number.setPlaceholderText("Mobile")
+        layout.addWidget(self.mobile_number)
+
+        # Add "Add Student" Button
+        add_student_button = QPushButton("Add Student")
+        add_student_button.clicked.connect(self.update_student_data)
+        layout.addWidget(add_student_button)
+
+        self.setLayout(layout)
+
+    def update_student_data(self):
+        pass
 
 
 class InsertDialog(QDialog):
